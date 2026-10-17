@@ -1,0 +1,4 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { makeQuestion, makeChoices, type Operation, type Year } from './maths.ts';
+for(const year of [3,4] as Year[])for(const operation of ['add','subtract','multiply','divide'] as Operation[])test(`Year ${year} ${operation} produces valid questions and choices`,()=>{for(let i=0;i<1000;i++){const q=makeQuestion(operation,year);assert.ok(Number.isInteger(q.answer)&&q.answer>=0);assert.equal(q.answer,operation==='add'?q.a+q.b:operation==='subtract'?q.a-q.b:operation==='multiply'?q.a*q.b:q.a/q.b);if(operation==='divide')assert.notEqual(q.b,0);if(operation==='multiply')assert.ok(q.a<=(year===3?10:12)&&q.b<=(year===3?10:12));if(operation==='add'||operation==='subtract')assert.ok(q.a<=(year===3?99:999)&&q.b<=(year===3?99:999));const choices=makeChoices(q.answer);assert.equal(new Set(choices).size,4);assert.ok(choices.includes(q.answer));assert.ok(choices.every(n=>Number.isInteger(n)&&n>=0));}});
